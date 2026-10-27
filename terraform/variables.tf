@@ -16,3 +16,7 @@ variable "db_password" {
 variable "desired_count" {
   default = 1
 }
+variable "my_ip" {
+  description = "My public IP address in CIDR format"
+  type        = string
+}
