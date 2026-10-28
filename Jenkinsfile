@@ -22,6 +22,20 @@ pipeline {
   }
 
   stages {
+    stage('Unit tests') {
+      steps {
+        sh 'docker build -f Dockerfile.test -t $APP-test:$BUILD_NUMBER .'
+        sh 'docker run --name $APP-test-$BUILD_NUMBER $APP-test:$BUILD_NUMBER pytest -v --junitxml=report.xml'
+      }
+      post {
+        always {
+          sh 'docker cp $APP-test-$BUILD_NUMBER:/app/report.xml . || true'
+          sh 'docker rm -f $APP-test-$BUILD_NUMBER || true'
+          junit allowEmptyResults: true, testResults: 'report.xml'
+        }
+      }
+    }
+
     stage('State bucket') {
       steps {
         sh '''
@@ -53,7 +67,7 @@ pipeline {
       }
     }
 
-    stage('Test') {
+    stage('Smoke test') {
       steps {
         sh 'docker run --rm $IMAGE:latest python -c "import main"'
       }
