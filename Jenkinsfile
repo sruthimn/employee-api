@@ -7,6 +7,8 @@ pipeline {
 
   options {
     disableConcurrentBuilds()
+    timeout(time: 45, unit: 'MINUTES')
+    buildDiscarder(logRotator(numToKeepStr: '10'))
   }
 
   environment {
@@ -88,7 +90,7 @@ pipeline {
         }
       }
     }
-    
+
     stage('Infrastructure') {
       steps {
         dir('terraform') {
