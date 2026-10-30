@@ -108,4 +108,15 @@ pipeline {
       }
     }
   }
+  post {
+    success {
+      echo "Build ${env.BUILD_NUMBER} deployed ${env.APP} to ${env.CLUSTER}"
+    }
+    failure {
+      echo "Build ${env.BUILD_NUMBER} FAILED: open Pipeline Overview to see the red stage"
+    }
+    always {
+      sh 'docker image prune -f || true'
+    }
+  }
 }
