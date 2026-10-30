@@ -81,6 +81,14 @@ pipeline {
       }
     }
 
+    stage('Approve') {
+      steps {
+        timeout(time: 15, unit: 'MINUTES') {
+          input message: 'Tests passed and the image is in ECR. Deploy this version to AWS?', ok: 'Deploy'
+        }
+      }
+    }
+    
     stage('Infrastructure') {
       steps {
         dir('terraform') {
